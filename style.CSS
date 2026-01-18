@@ -1,0 +1,59 @@
+/* GLOBAL SETTINGS */
+::-webkit-scrollbar { height: 6px; width: 6px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+
+/* THUMBNAILS & DELETE BUTTON */
+.thumb-item {
+    width: 80px; height: 60px;
+    border-radius: 8px; border: 2px solid #334155;
+    overflow: visible; cursor: pointer;
+    transition: all 0.2s; opacity: 0.6;
+    flex-shrink: 0; position: relative;
+    margin-top: 10px;
+}
+.thumb-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
+.thumb-item.active {
+    border-color: #3b82f6; opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+    z-index: 10;
+}
+.thumb-badge {
+    position: absolute; bottom: 2px; right: 2px;
+    background: rgba(0,0,0,0.7); color: #fff;
+    font-size: 8px; padding: 1px 4px;
+    border-radius: 4px; font-weight: bold; pointer-events: none;
+}
+.thumb-delete {
+    position: absolute; top: -8px; right: -8px;
+    width: 20px; height: 20px;
+    background: #ef4444; color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; border: 2px solid #1e293b;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    z-index: 20; transition: all 0.2s;
+}
+.thumb-delete:hover { transform: scale(1.2); background: #dc2626; }
+
+/* BUTTONS */
+.tool-btn {
+    width: 36px; height: 36px;
+    border-radius: 8px; background: rgba(255,255,255,0.05);
+    color: #94a3b8; display: flex;
+    align-items: center; justify-content: center;
+    transition: all 0.2s;
+}
+.tool-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+
+/* CROPPER - PASSPORT STYLE */
+.cropper-modal { background-color: rgba(0, 0, 0, 0.85); }
+.cropper-view-box { outline: 2px solid #3b82f6; } 
+.cropper-line { background-color: rgba(59, 130, 246, 0.5); }
+.cropper-point { 
+    background-color: #3b82f6; width: 12px; height: 12px; 
+    border-radius: 50%; opacity: 1; 
+}
+.cropper-bg { background-image: none; background: #050505; }
