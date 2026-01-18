@@ -1,9 +1,10 @@
 /**
- * PASSPORT PHOTO STUDIO (FINAL HIGH-RES VERSION)
- * Focus: 100% Quality, Original Filename, ZIP Batch
+ * PASSPORT PHOTO STUDIO (SECURE + HIGH RES)
+ * Features: Password Lock, High Res, Batch ZIP, Original Names
  */
 
-const DB_NAME = 'PassportZipDB_HighRes';
+const APP_PASSWORD = "5544332211"; // YOUR PASSWORD
+const DB_NAME = 'PassportZipDB_Secure';
 const db = new Dexie(DB_NAME);
 db.version(1).stores({ cards: '++id, blob, name, cropData' });
 
@@ -12,7 +13,17 @@ const state = { cards: [], activeIndex: -1, cropper: null };
 // Standard Passport Ratio (35mm x 45mm)
 const PASSPORT_ASPECT_RATIO = 3.5 / 4.5; 
 
+// UI Elements
 const els = {
+    // Login Elements
+    loginOverlay: document.getElementById('loginOverlay'),
+    passwordInput: document.getElementById('passwordInput'),
+    btnLogin: document.getElementById('btnLogin'),
+    loginError: document.getElementById('loginError'),
+    appContent: document.getElementById('appContent'),
+    btnLogout: document.getElementById('btnLogout'),
+
+    // App Elements
     fileInput: document.getElementById('fileInput'),
     thumbStrip: document.getElementById('thumbnailStrip'),
     editorImage: document.getElementById('editorImage'),
@@ -26,15 +37,57 @@ const els = {
     btnPrev: document.getElementById('btnPrev'),
     btnNext: document.getElementById('btnNext'),
     imageCounter: document.getElementById('imageCounter'),
-    
     btnRotate: document.getElementById('btnRotate'),
     btnReset: document.getElementById('btnReset'),
-    
     btnDownloadZip: document.getElementById('btnDownloadZip')
 };
 
-window.addEventListener('DOMContentLoaded', async () => {
+// --- SECURITY LOGIC ---
+function checkAuth() {
+    const isAuth = localStorage.getItem('isSabbirLoggedIn');
+    if (isAuth === 'true') {
+        unlockApp();
+    }
+}
+
+function unlockApp() {
+    els.loginOverlay.classList.add('hidden'); // Hide Lock Screen
+    els.appContent.classList.remove('opacity-0'); // Show App
+    initApp(); // Load DB and listeners
+}
+
+function handleLogin() {
+    const input = els.passwordInput.value;
+    if (input === APP_PASSWORD) {
+        localStorage.setItem('isSabbirLoggedIn', 'true');
+        unlockApp();
+    } else {
+        els.loginError.classList.remove('hidden');
+        els.passwordInput.value = '';
+        els.passwordInput.focus();
+    }
+}
+
+function handleLogout() {
+    localStorage.removeItem('isSabbirLoggedIn');
+    location.reload(); // Reload to show lock screen
+}
+
+// --- APP LOGIC ---
+async function initApp() {
     await loadFromDB();
+    // Re-bind listeners here just in case, though usually fine on load
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    checkAuth(); // Check security first
+    
+    // Login Listeners
+    els.btnLogin.addEventListener('click', handleLogin);
+    els.passwordInput.addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') handleLogin();
+    });
+    
     setupEventListeners();
 });
 
@@ -76,7 +129,6 @@ function renderThumbnails() {
         const div = document.createElement('div');
         div.className = `thumb-item ${index === state.activeIndex ? 'active' : ''}`;
         
-        // Display short name
         const displayName = card.name.length > 10 ? card.name.substring(0, 8) + '...' : card.name;
         
         div.innerHTML = `
@@ -180,7 +232,6 @@ async function saveCropData() {
 
 function updatePreview() {
     if (!state.cropper) return;
-    // Preview doesn't need to be super high res, just fast
     const canvas = state.cropper.getCroppedCanvas({ width: 350, height: 450 });
     if (canvas) {
         els.previewCard.innerHTML = '';
@@ -201,8 +252,6 @@ async function handleDownloadZip() {
 
     for (let i = 0; i < state.cards.length; i++) {
         const card = state.cards[i];
-        
-        // Generate ULTRA High-Res Photo
         const imgUrl = await getHighResCrop(card);
         
         // Handle Filename Extension
@@ -210,7 +259,6 @@ async function handleDownloadZip() {
         if (!finalName.includes('.')) {
             finalName += '.jpg';
         } else {
-            // Replace extension with .jpg
             finalName = finalName.substring(0, finalName.lastIndexOf('.')) + '.jpg';
         }
 
@@ -218,7 +266,7 @@ async function handleDownloadZip() {
     }
 
     zip.generateAsync({type:"blob"}).then(function(content) {
-        saveAs(content, "Passport_Batch_HighQuality.zip");
+        saveAs(content, "Passport_Batch_HD.zip");
         showToast("HD ZIP Downloaded!");
     });
 }
@@ -226,27 +274,19 @@ async function handleDownloadZip() {
 // --- HELPER: Generate ULTRA High-Res Image ---
 async function getHighResCrop(card) {
     return new Promise(resolve => {
-        
-        // Settings for MAX Quality
-        // 35mm x 45mm @ ~600 DPI = Approx 827px x 1063px
-        // Let's go even higher to 1200px width (approx 870 DPI) for safety
+        // ULTRA HD Settings (1200px wide)
         const HD_WIDTH = 1200;
-        const HD_HEIGHT = 1542; // Based on 3.5/4.5 ratio
+        const HD_HEIGHT = 1542; 
 
-        // Check if active card
         if (state.activeIndex > -1 && card.id === state.cards[state.activeIndex].id && state.cropper) {
             const canvas = state.cropper.getCroppedCanvas({
-                width: HD_WIDTH, 
-                height: HD_HEIGHT,
-                imageSmoothingEnabled: true, 
-                imageSmoothingQuality: 'high'
+                width: HD_WIDTH, height: HD_HEIGHT,
+                imageSmoothingEnabled: true, imageSmoothingQuality: 'high'
             });
-            // 1.0 Quality JPEG
             resolve(canvas.toDataURL('image/jpeg', 1.0));
             return;
         }
 
-        // Background Processing
         const img = new Image();
         img.src = card.blob;
         img.onload = () => {
@@ -261,14 +301,10 @@ async function getHighResCrop(card) {
                 checkCrossOrigin: false,
                 ready() {
                     if (card.cropData) c.setData(card.cropData);
-                    
                     const canvas = c.getCroppedCanvas({
-                        width: HD_WIDTH, 
-                        height: HD_HEIGHT,
-                        imageSmoothingEnabled: true, 
-                        imageSmoothingQuality: 'high'
+                        width: HD_WIDTH, height: HD_HEIGHT,
+                        imageSmoothingEnabled: true, imageSmoothingQuality: 'high'
                     });
-                    
                     const url = canvas.toDataURL('image/jpeg', 1.0);
                     c.destroy();
                     div.remove();
@@ -287,10 +323,13 @@ function setupEventListeners() {
     els.btnReset.onclick = () => state.cropper?.reset();
     els.zoomRange.oninput = (e) => state.cropper?.zoomTo(e.target.value);
     els.btnDownloadZip.onclick = handleDownloadZip;
+    els.btnLogout.onclick = handleLogout; // New Logout Listener
     
     document.addEventListener('keydown', (e) => {
-        if(e.key === 'ArrowLeft') handlePrev();
-        if(e.key === 'ArrowRight') handleNext();
+        if (document.getElementById('loginOverlay').classList.contains('hidden')) {
+            if(e.key === 'ArrowLeft') handlePrev();
+            if(e.key === 'ArrowRight') handleNext();
+        }
     });
 }
 
