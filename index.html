@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Passport Photo Studio</title>
+    <title>Sabbir's Passport Studio</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -34,102 +34,127 @@
 </head>
 <body class="bg-dark text-gray-200 font-sans h-screen flex flex-col overflow-hidden">
 
-    <header class="h-20 bg-darker/90 backdrop-blur border-b border-gray-700 flex items-center justify-between px-6 shrink-0 z-50 shadow-lg">
-        <div class="flex items-center gap-4">
-            <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center text-white text-xl shadow-lg shadow-blue-500/20">
-                <i class="fa-solid fa-user-tie"></i>
+    <div id="loginOverlay" class="fixed inset-0 bg-darker z-[9999] flex flex-col items-center justify-center p-4">
+        <div class="bg-panel p-8 rounded-2xl shadow-2xl border border-gray-700 w-full max-w-md text-center">
+            <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl mx-auto flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20">
+                <i class="fa-solid fa-lock text-2xl text-white"></i>
             </div>
-            <div class="hidden md:block">
-                <h1 class="font-bold text-lg leading-tight text-white">Passport Photo Studio</h1>
-                <p class="text-[10px] text-gray-400 uppercase tracking-widest">Batch ZIP System</p>
-            </div>
+            <h2 class="text-2xl font-bold text-white mb-2">Restricted Access</h2>
+            <p class="text-gray-400 text-sm mb-6">This tool is private. Please enter the PIN to continue.</p>
+            
+            <input type="password" id="passwordInput" placeholder="Enter PIN Code" 
+                class="w-full bg-darker border border-gray-600 rounded-lg px-4 py-3 text-center text-white text-lg tracking-widest focus:outline-none focus:border-neon mb-4 transition">
+            
+            <button id="btnLogin" class="w-full bg-neon hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition shadow-lg shadow-neon/20">
+                UNLOCK SYSTEM
+            </button>
+            <p id="loginError" class="text-red-500 text-xs mt-4 hidden"><i class="fa-solid fa-circle-exclamation"></i> Incorrect PIN</p>
         </div>
+        <p class="mt-8 text-gray-600 text-xs">Developed for Sabbir Hossin</p>
+    </div>
 
-        <div class="flex items-center gap-6">
-            <div class="hidden md:flex items-center gap-3 bg-white/5 px-4 py-1.5 rounded-full border border-white/10 hover:bg-white/10 transition cursor-pointer">
-                <div class="text-right">
-                    <p class="text-[10px] text-gray-400">Logged in as</p>
-                    <p class="text-sm font-bold text-white">Sabbir Hossin</p>
-                </div>
-                <div class="w-10 h-10 rounded-full p-0.5 border-2 border-neon bg-gray-800">
-                    <img src="https://ui-avatars.com/api/?name=Sabbir+Hossin&background=3b82f6&color=fff" class="w-full h-full rounded-full object-cover">
-                </div>
-            </div>
-
-            <label class="cursor-pointer bg-neon hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl flex items-center gap-2 font-bold shadow-[0_0_20px_rgba(59,130,246,0.3)] transition active:scale-95">
-                <i class="fa-solid fa-cloud-arrow-up"></i>
-                <span class="hidden sm:inline">Upload Files</span>
-                <input type="file" id="fileInput" multiple accept="image/*" class="hidden">
-            </label>
-        </div>
-    </header>
-
-    <div class="h-24 bg-panel border-b border-gray-700 flex items-center px-4 gap-4 shrink-0 overflow-x-auto whitespace-nowrap scrollbar-hide z-40" id="thumbnailStrip">
-        </div>
-
-    <main class="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+    <div id="appContent" class="flex flex-col h-full opacity-0 transition-opacity duration-500">
         
-        <div class="flex-1 bg-darker relative flex flex-col lg:border-r border-gray-700">
+        <header class="h-20 bg-darker/90 backdrop-blur border-b border-gray-700 flex items-center justify-between px-6 shrink-0 z-50 shadow-lg">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center text-white text-xl shadow-lg shadow-blue-500/20">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <div class="hidden md:block">
+                    <h1 class="font-bold text-lg leading-tight text-white">Passport Photo Studio</h1>
+                    <p class="text-[10px] text-gray-400 uppercase tracking-widest">Secure Batch System</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <div class="hidden md:flex items-center gap-3 bg-white/5 px-4 py-1.5 rounded-full border border-white/10 hover:bg-white/10 transition cursor-pointer">
+                    <div class="text-right">
+                        <p class="text-[10px] text-gray-400">Logged in as</p>
+                        <p class="text-sm font-bold text-white">Sabbir Hossin</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full p-0.5 border-2 border-neon bg-gray-800">
+                        <img src="https://ui-avatars.com/api/?name=Sabbir+Hossin&background=3b82f6&color=fff" class="w-full h-full rounded-full object-cover">
+                    </div>
+                </div>
+
+                <label class="cursor-pointer bg-neon hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl flex items-center gap-2 font-bold shadow-[0_0_20px_rgba(59,130,246,0.3)] transition active:scale-95">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span class="hidden sm:inline">Upload Files</span>
+                    <input type="file" id="fileInput" multiple accept="image/*" class="hidden">
+                </label>
+            </div>
+        </header>
+
+        <div class="h-24 bg-panel border-b border-gray-700 flex items-center px-4 gap-4 shrink-0 overflow-x-auto whitespace-nowrap scrollbar-hide z-40" id="thumbnailStrip">
+            </div>
+
+        <main class="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
             
-            <div class="h-14 bg-panel/50 border-b border-gray-700 flex items-center justify-between px-4 z-10">
-                <div class="flex items-center gap-3 bg-darker/50 px-3 py-1.5 rounded-lg border border-gray-700">
-                    <button id="btnPrev" class="w-8 h-8 rounded hover:bg-white/10 text-gray-400 hover:text-white transition disabled:opacity-30">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </button>
-                    <span id="imageCounter" class="text-xs font-mono font-bold text-neon w-20 text-center">0 / 0</span>
-                    <button id="btnNext" class="w-8 h-8 rounded hover:bg-white/10 text-gray-400 hover:text-white transition disabled:opacity-30">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
+            <div class="flex-1 bg-darker relative flex flex-col lg:border-r border-gray-700">
+                
+                <div class="h-14 bg-panel/50 border-b border-gray-700 flex items-center justify-between px-4 z-10">
+                    <div class="flex items-center gap-3 bg-darker/50 px-3 py-1.5 rounded-lg border border-gray-700">
+                        <button id="btnPrev" class="w-8 h-8 rounded hover:bg-white/10 text-gray-400 hover:text-white transition disabled:opacity-30">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <span id="imageCounter" class="text-xs font-mono font-bold text-neon w-20 text-center">0 / 0</span>
+                        <button id="btnNext" class="w-8 h-8 rounded hover:bg-white/10 text-gray-400 hover:text-white transition disabled:opacity-30">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button id="btnRotate" class="tool-btn" title="Rotate"><i class="fa-solid fa-rotate-right"></i></button>
+                        <button id="btnReset" class="tool-btn text-red-400 hover:text-red-300" title="Reset"><i class="fa-solid fa-rotate-left"></i></button>
+                    </div>
                 </div>
 
-                <div class="flex items-center gap-2">
-                    <button id="btnRotate" class="tool-btn" title="Rotate"><i class="fa-solid fa-rotate-right"></i></button>
-                    <button id="btnReset" class="tool-btn text-red-400 hover:text-red-300" title="Reset"><i class="fa-solid fa-rotate-left"></i></button>
+                <div class="flex-1 relative bg-[#050505] overflow-hidden flex items-center justify-center p-4">
+                    <div id="emptyState" class="text-center text-gray-600 animate-pulse">
+                        <i class="fa-solid fa-user-crop text-5xl mb-3"></i>
+                        <p class="text-sm">Upload card to crop photo</p>
+                    </div>
+                    <div id="cropperWrapper" class="hidden w-full h-full">
+                        <img id="editorImage" class="max-w-full block" src="">
+                    </div>
+                </div>
+
+                <div class="h-14 bg-panel border-t border-gray-700 flex items-center px-6 gap-4 z-10">
+                    <i class="fa-solid fa-magnifying-glass-minus text-gray-500"></i>
+                    <input type="range" id="zoomRange" min="0.1" max="3" step="0.1" value="1" class="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-neon">
+                    <i class="fa-solid fa-magnifying-glass-plus text-gray-500"></i>
                 </div>
             </div>
 
-            <div class="flex-1 relative bg-[#050505] overflow-hidden flex items-center justify-center p-4">
-                <div id="emptyState" class="text-center text-gray-600 animate-pulse">
-                    <i class="fa-solid fa-user-crop text-5xl mb-3"></i>
-                    <p class="text-sm">Upload card to crop photo</p>
+            <div class="w-full lg:w-[350px] bg-panel p-6 flex flex-col gap-6 shadow-2xl z-30 border-l border-gray-700">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-sm font-bold text-gray-300 uppercase tracking-widest">Photo Preview</h3>
+                    <span class="text-[10px] bg-neon/20 text-neon px-2 py-1 rounded border border-neon/30">Passport Size</span>
                 </div>
-                <div id="cropperWrapper" class="hidden w-full h-full">
-                    <img id="editorImage" class="max-w-full block" src="">
-                </div>
-            </div>
-
-            <div class="h-14 bg-panel border-t border-gray-700 flex items-center px-6 gap-4 z-10">
-                <i class="fa-solid fa-magnifying-glass-minus text-gray-500"></i>
-                <input type="range" id="zoomRange" min="0.1" max="3" step="0.1" value="1" class="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-neon">
-                <i class="fa-solid fa-magnifying-glass-plus text-gray-500"></i>
-            </div>
-        </div>
-
-        <div class="w-full lg:w-[350px] bg-panel p-6 flex flex-col gap-6 shadow-2xl z-30 border-l border-gray-700">
-            <div class="flex justify-between items-center">
-                <h3 class="text-sm font-bold text-gray-300 uppercase tracking-widest">Photo Preview</h3>
-                <span class="text-[10px] bg-neon/20 text-neon px-2 py-1 rounded border border-neon/30">Passport Size</span>
-            </div>
-            
-            <div class="flex-1 bg-darker rounded-xl border border-gray-700 flex items-center justify-center overflow-hidden relative shadow-inner p-4">
-                <div class="bg-white p-2 shadow-[0_0_30px_rgba(0,0,0,0.5)] rounded-sm">
-                    <div id="previewCard" class="w-[150px] h-[192px] border border-gray-200 bg-gray-100 overflow-hidden relative">
-                        <div class="flex flex-col items-center justify-center h-full text-gray-400 gap-2">
-                            <i class="fa-solid fa-user text-2xl"></i>
-                            <span class="text-[10px] font-bold">PREVIEW</span>
+                
+                <div class="flex-1 bg-darker rounded-xl border border-gray-700 flex items-center justify-center overflow-hidden relative shadow-inner p-4">
+                    <div class="bg-white p-2 shadow-[0_0_30px_rgba(0,0,0,0.5)] rounded-sm">
+                        <div id="previewCard" class="w-[150px] h-[192px] border border-gray-200 bg-gray-100 overflow-hidden relative">
+                            <div class="flex flex-col items-center justify-center h-full text-gray-400 gap-2">
+                                <i class="fa-solid fa-user text-2xl"></i>
+                                <span class="text-[10px] font-bold">PREVIEW</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="grid grid-cols-1 gap-3">
-                <button id="btnDownloadZip" class="bg-neon hover:bg-blue-500 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-3 transition shadow-lg shadow-neon/30 group">
-                    <i class="fa-solid fa-file-zipper text-xl group-hover:scale-110 transition"></i> 
-                    <span>DOWNLOAD ALL (ZIP)</span>
-                </button>
+                <div class="grid grid-cols-1 gap-3">
+                    <button id="btnDownloadZip" class="bg-neon hover:bg-blue-500 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-3 transition shadow-lg shadow-neon/30 group">
+                        <i class="fa-solid fa-file-zipper text-xl group-hover:scale-110 transition"></i> 
+                        <span>DOWNLOAD ALL (ZIP)</span>
+                    </button>
+                    <button id="btnLogout" class="text-xs text-gray-500 hover:text-red-400 mt-2">
+                        <i class="fa-solid fa-lock"></i> Lock System
+                    </button>
+                </div>
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
     <div id="toast" class="fixed top-24 right-5 bg-neon text-white px-6 py-4 rounded-xl shadow-2xl translate-x-[150%] transition-transform font-bold z-[100] border-l-4 border-white flex items-center gap-3">
         <i class="fa-solid fa-circle-check"></i>
